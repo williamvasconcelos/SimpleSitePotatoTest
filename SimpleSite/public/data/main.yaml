@@ -1,0 +1,35 @@
+# Loader
+id: loader
+parameters:
+  locale: pt_BR
+
+views:
+  # Main
+  - id: main
+    zIndex: 1
+    class: simplesite.views.MainView
+    localeFile: "%(localePath)s/copydeck.yaml"
+    dependencies:
+      - url: "%(basePath)s/simplesite_main.swf"
+        domain: current
+  # Album
+  - id: album
+    zIndex: 1
+    class: simplesite.views.AlbumView
+    dependencies:
+      - url: "%(basePath)s/AlbumView.swf"
+        domain: current
+  # WebCam
+  - id: webcam
+    zIndex: 1
+    class: simplesite.views.WebCamView
+    dependencies:
+      - url: "%(basePath)s/WebCamView.swf"
+        domain: current
+  # Home
+  - id: home
+    zIndex: 1
+    class: simplesite.views.HomeView
+    dependencies:
+      - url: "%(basePath)s/HomeView.swf"
+        domain: current
