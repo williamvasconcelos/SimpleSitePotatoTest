@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/AMBEV-SUBZERO-EFFECTS/!svn/ver/20/04-Implementacao/01-CodigoFonte/trunk/src/flash/src/potato/core
+END
+IDisposable.as
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/AMBEV-SUBZERO-EFFECTS/!svn/ver/20/04-Implementacao/01-CodigoFonte/trunk/src/flash/src/potato/core/IDisposable.as
+END
+IRecyclable.as
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/AMBEV-SUBZERO-EFFECTS/!svn/ver/20/04-Implementacao/01-CodigoFonte/trunk/src/flash/src/potato/core/IRecyclable.as
+END
+IVisible.as
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/AMBEV-SUBZERO-EFFECTS/!svn/ver/20/04-Implementacao/01-CodigoFonte/trunk/src/flash/src/potato/core/IVisible.as
+END
+IResizable.as
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/AMBEV-SUBZERO-EFFECTS/!svn/ver/20/04-Implementacao/01-CodigoFonte/trunk/src/flash/src/potato/core/IResizable.as
+END

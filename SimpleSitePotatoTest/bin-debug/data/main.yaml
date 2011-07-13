@@ -1,0 +1,28 @@
+# Loader
+id: loader
+parameters:
+  locale: pt_BR
+  basePath: .
+  firstView: main
+views: # Loader's child views
+  # Main
+  - id: main
+    class: app.simplesitepotatotest.views.Main
+    localeFile: "%(localePath)s/copydeck.yaml" # This locale file is loaded here, all views loaded after main will have it available to them
+    dependencies:
+      - url: "%(basePath)s/Main.swf"      
+  # Home
+  - id: home
+    class: app.simplesitepotatotest.views.Home
+    dependencies:
+      - url: "%(basePath)s/Home.swf"
+  # Album
+  - id: album
+    class: app.simplesitepotatotest.views.AlbumView
+    dependencies:
+      - url: "%(basePath)s/AlbumView.swf"
+   # WebCam
+  - id: webcam
+    class: app.simplesitepotatotest.views.WebCamView
+    dependencies:
+      - url: "%(basePath)s/WebCamView.swf"

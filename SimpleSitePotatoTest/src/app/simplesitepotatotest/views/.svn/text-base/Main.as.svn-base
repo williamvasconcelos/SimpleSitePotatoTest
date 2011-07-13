@@ -1,0 +1,213 @@
+package app.antarticasubzero.views
+{
+	import app.antarticasubzero.assets.Menu;
+	import app.antarticasubzero.views.AlbumView;
+	import app.antarticasubzero.views.Home;
+	import app.antarticasubzero.views.WebCamView;
+	
+	import com.adobe.serialization.json.JSON;
+	import com.facebook.graph.Facebook;
+	import com.greensock.TweenMax;
+	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.MouseEvent;
+	import flash.media.Camera;
+	import flash.media.Video;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.utils.clearTimeout;
+	import flash.utils.setTimeout;
+	
+	import potato.modules.navigation.View;
+	
+	public class Main extends View
+	{
+//		protected static const APP_ID:String = "144817915552688";
+		protected static const APP_ID:String = "244419368919586";
+		protected var USER_ID:Number;
+		protected static const PARAMS_PERMISSIONS:Object = {perms:"publish_stream, user_photos"};
+		protected var ALBUM_ID:String;
+		protected var _menu:Menu;
+		protected var _background:BackgroundAsset;
+		protected var _loginTimeout:uint;
+		
+		protected var _camera:Camera;
+		protected var _video:Video;
+		protected var _img:Bitmap;
+		
+		
+		public function Main()
+		{
+			super();
+		}
+		
+		override public function init():void
+		{
+			super.init();
+			Facebook.init(APP_ID,onInit);
+		}
+		
+		override public function show():void
+		{
+			_background = new BackgroundAsset();
+			addChildAt(_background,0);
+			
+			_menu = new Menu(msg("main"));
+			addChild(_menu);
+	
+			super.show();
+//			TweenMax.delayedCall(2, super.show);
+			addView("home");
+			
+		}
+		
+		public function set menuEnabled(value:Boolean):void
+		{
+			_menu.enabled = value;
+		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+		}
+		
+		protected function onInit(result:Object, fail:Object):void 
+		{						
+			if (result) 
+			{ 
+				//already logged in because of existing session
+				//trace("OnInit: " + result.uid);
+				trace("onInit, Logged In");
+				USER_ID = result.uid;
+				handleCallApiClick();
+//				loadFriends();
+			} 
+			else 
+			{
+				trace("onInit, Not Logged In\n");
+				handleLoginClick();
+			}
+			
+		}
+		
+		protected function handleLoginClick():void 
+		{			
+			
+			//Facebook.login(onLogin, opts);
+			_loginTimeout = setTimeout(Facebook.login, 150,onLogin,PARAMS_PERMISSIONS);
+			trace("handleLoginClick");
+		}
+		
+		protected function onLogin(result:Object, fail:Object):void 
+		{
+			if(_loginTimeout) clearTimeout(_loginTimeout);
+			
+			if (result) 
+			{
+				handleCallApiClick(); //Already logged in because of existing session - start assets loading
+				USER_ID = result.uid;
+			}
+			else
+			{
+				_loginTimeout = setTimeout(Facebook.login, 150,onLogin,PARAMS_PERMISSIONS); //Not logged in - do login with required permissions at first run. If login operation's not successful, throw an error
+			}
+		}
+		
+		protected function loadFriends():void {
+			Facebook.api('/me/friends', handleFriendsLoad);
+		}
+		
+		protected function handleFriendsLoad(response:Object, fail:Object):void 
+		{
+			var friends:Array = response as Array;			
+			var l:int = friends.length;
+			for (var i:int=0; i < l; i++) {
+				trace("FriendsArray: " + friends[i]);
+			}
+		}
+		
+		protected function handleCallApiClick():void 
+		{
+			var requestType:String = "GET";
+			var params:Object = null;	
+			
+			Facebook.api("me/albums/", onCallApi, params, requestType); //use POST to send data (as per Facebook documentation)
+		}
+		
+		protected function onCallApi(result:Object, fail:Object):void 
+		{
+			//trace("\nResult:\n"+JSON.encode(result[0].id));
+			
+			var _arrAlbums:Array;
+			
+			var txt:String;
+			for(var i:int = 0;i<result.length;i++)
+			{
+				//trace(i+1,result.length);
+				if(i+1 == result.length)
+				{
+					//trace("id: "+result[i].id);
+					txt += String(result[i].id);
+				}
+				else
+				{
+					//trace("id: "+result[i].id);
+					txt += String(result[i].id) + ",";
+				}
+			}
+			
+			txt = txt.substr(4,int.MAX_VALUE);
+//			trace("\n\n_______txtAlbums:\n" + txt);
+			
+			_arrAlbums = txt.split(",");
+			trace("_arrAlbums: " + _arrAlbums);
+//			trace("array: " + _arrFriends[0],_arrFriends[1],_arrFriends[2]);
+			
+			if (result) 
+			{
+				trace("\n\nRESULT:\n" + JSON.encode(result)); 
+				Facebook.api(USER_ID+"/albums?name='Antartica Sub Zero Effects'&message='Este é o meu album criado pelo App Antartica Sub Zero Effects'",onAlbumCreate,null,"POST");
+			} 
+			else 
+			{
+				trace("\n\nFAIL:\n" + JSON.encode(fail)); 
+			}
+		}
+		
+		protected function onAlbumCreate(result:Object,fail:Object):void
+		{
+			if (result) 
+			{
+				trace("\n\nRESULT_COMPLETE:\n" + JSON.encode(result)); 
+				
+				ALBUM_ID = result.id;
+				
+			}
+			else
+			{
+				trace("\n\nnRESULT_FAIL:\n" + JSON.encode(fail)); 
+			}
+		}
+		
+		protected function uploadPicture(e:MouseEvent):void
+		{
+			var params:Object;
+			var data:BitmapData;
+			var bp:Bitmap;
+			
+			data = new BitmapData(50, 50);
+			data.draw(_img);
+			
+			bp = new Bitmap(data);
+			
+			params = {image:bp, message:'Test Photo', fileName:'img.png'};
+			
+			Facebook.api(ALBUM_ID+"/photos", onCallApi, params, "POST");
+		}
+	}
+}

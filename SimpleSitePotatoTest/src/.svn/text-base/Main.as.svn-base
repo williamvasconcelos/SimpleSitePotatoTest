@@ -1,0 +1,12 @@
+package
+{
+	import flash.display.Sprite;
+	
+	public class AntarticaSubZeroEffects extends Sprite
+	{
+		public function AntarticaSubZeroEffects()
+		{
+			trace("Funciona essa merda!");
+		}
+	}
+}
