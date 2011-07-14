@@ -8,7 +8,6 @@ package simplesite.views
 	
 	import potato.modules.navigation.View;
 	
-
 	
 	public class HomeView extends View
 	{

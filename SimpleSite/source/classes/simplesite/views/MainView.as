@@ -12,7 +12,7 @@ package simplesite.views
 
 		override public function init():void
 		{
-			with(graphics) beginFill(0x0), drawRect(0, 0, 100, 100), endFill();
+			//with(graphics) beginFill(0x0), drawRect(0, 0, 100, 100), endFill();
 		}
 		override public function show():void
 		{
